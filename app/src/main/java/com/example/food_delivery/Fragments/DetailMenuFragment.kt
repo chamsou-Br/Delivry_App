@@ -9,69 +9,105 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.navigation.findNavController
 import com.bumptech.glide.Glide
+import com.example.food_delivery.Adapters.adapterRestaurants
 import com.example.food_delivery.Utils.AppDatabase
 import com.example.food_delivery.R
+import com.example.food_delivery.Utils.DataType.MenuData
 import com.example.food_delivery.databinding.FragmentDetailMenuBinding
 import com.example.food_delivery.modals.Entity.Bag
+import com.example.food_delivery.services.menusServiceAPI
+import kotlinx.coroutines.*
 
 
 class detailMenuFragment : Fragment() {
 
     lateinit var binding: FragmentDetailMenuBinding
+     var data : MenuData? = null;
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
+        val args = arguments
+        val id = args?.getString("id");
+        loadMenus(id!!)
         binding = FragmentDetailMenuBinding.inflate(layoutInflater)
+
+
         binding.apply {
-            val args = arguments
-            val position = args?.getInt("id")
-            val logoUrl = args?.getString("logoUrl")
-            val avg = args?.getFloat("avg")
-            val nameMenu = args?.getString("name")
-            val rest = args?.getInt("rest");
-            val desc = "Ce soir, c’est menu mexicain ? Pas question de faire l’impasse sur les tacos, stars de la cuisine mexicaine récupérées par sa cousine tex mex. Faciles à faire et encore plus faciles à dévorer, ces tortillas de maïs pliées ou roulées sont généreusement garnies"
-            //img.setImageResource(R.drawable.foo)
-            Glide.with(requireActivity())
-                .load(logoUrl)
-                .into(img)
-            name.text = nameMenu
-            descr.text = desc
-            price.text= "$ " + avg.toString()
+            navigateUp.setOnClickListener {
+                it.findNavController().navigateUp()
+            }
+            plusContainer.setOnClickListener {
+                qty.text = (qty.text.toString().toInt() + 1).toString()
+            }
+            minusContainer.setOnClickListener {
+                if (qty.text.toString().toInt() > 1) {
+                    qty.text = (qty.text.toString().toInt() - 1).toString()
+                }
+            }
             bag.setOnClickListener {
+                val pref = requireActivity().getSharedPreferences("fileName", Context.MODE_PRIVATE)
+                if (pref.contains("connected")) {
+                    // The "connected" preference value exists$
+                }
+                val bundle = Bundle()
+                bundle.putString("rest", data?.rest)
+                it.findNavController().navigate(R.id.action_detailMenuFragment_to_bagFragment,bundle)
+            }
+            addToBag.setOnClickListener {
                 val db = AppDatabase.buildDatabase(requireActivity());
-                if (db?.getBagDao()?.getBagByName(nameMenu)?.size == 0) {
-                    val bag = Bag(name = nameMenu,price = avg, logoUrl =  logoUrl,descr =  desc,qty = qty.text.toString().toInt(),rest = rest)
+                if (db?.getBagDao()?.getBagByName(data?.name)?.size == 0) {
+                    val bag = Bag(id = data?._id!!, name = data?.name,price = data?.avg.toString().toFloat(), logoUrl =  data?.logoUrl,descr =  data?.desc,qty = qty.text.toString().toInt(),rest = data?.rest )
                     db?.getBagDao()?.addBag(bag);
                 }else {
-                    var bag = db?.getBagDao()?.getBagByName(nameMenu)?.get(0)
+                    var bag = db?.getBagDao()?.getBagByName(data?.name)?.get(0)
                     bag?.qty = bag?.qty?.plus(qty.text.toString().toInt())
                     db?.getBagDao()?.updateBag(bag!!)
                 }
-                val message = "commades is added to bag *_*" // the message to display
-                val duration = Toast.LENGTH_SHORT // the duration of the message (short or long)
-                val toast = Toast.makeText(context, message, duration)
-                toast.show()
-            }
-            checkout.setOnClickListener {
-                val pref = requireActivity().getSharedPreferences("fileName", Context.MODE_PRIVATE)
                 val bundle = Bundle()
-                bundle.putInt("rest", rest!!)
-                if (pref.contains("connected")) {
-                    // The "connected" preference value exists$
-                    it.findNavController().navigate(R.id.action_detailMenuFragment_to_bagFragment,bundle)
-                } else {
-                    // The "connected" preference value does not exist
-                    it.findNavController().navigate(R.id.action_detailMenuFragment_to_loginFragment,bundle)
-                }
-
+                bundle.putString("rest", data?.rest!!)
+                it.findNavController().navigate(R.id.action_detailMenuFragment_to_bagFragment,bundle)
             }
-
         }
 
         val root = binding.root
         return root
+    }
+
+    fun loadMenus(id : String) {
+    println(id)
+        val exceptionHandler = CoroutineExceptionHandler { coroutineContext, throwable ->
+            requireActivity().runOnUiThread {
+                println(throwable.message)
+                Toast.makeText(requireActivity(), throwable.message, Toast.LENGTH_LONG).show()
+            }
+        }
+        CoroutineScope(Dispatchers.IO+ exceptionHandler).launch {
+            val response = menusServiceAPI.createMenuServiceAPI().getMenusById(id);
+            withContext(Dispatchers.Main) {
+                if (response.isSuccessful && response.body() != null) {
+                    var body = response.body()
+                    if (body != null) {
+                        data = MenuData(_id = body._id ,rest = body.rest,name=body.name, logoUrl =  body.logoUrl, desc = body.desc , avg = body.avg , type = body.type , calories = body.calories , size = body.size , cooking = body.cooking).also { data = it }
+                    }
+                    binding.apply {
+                        Glide.with(requireActivity())
+                            .load(data?.logoUrl)
+                            .into(img)
+                        name.text = data?.name
+                        type.text = data?.type
+                        descr.text = data?.desc
+                        price.text= "$ " + data?.avg
+                        sizeValue.text = data?.size
+                        caloriesValue.text = data?.calories
+                        cookingValue.text = data?.cooking
+                    }
+                } else {
+                    Toast.makeText(requireActivity(), "Une erreur s'est produite", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
     }
 
 }

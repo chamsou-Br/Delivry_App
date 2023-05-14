@@ -45,3 +45,16 @@ fun openFb(ctx: Context, appUrl:String,webUrl:String){
         ctx.startActivity(intent)
     }
 }
+
+fun openInsta(ctx: Context, appUrl:String,webUrl:String){
+    try {
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(appUrl))
+        ctx.startActivity(intent)
+    }
+    catch (e: ActivityNotFoundException)
+    {
+        Toast.makeText(ctx,"Erreur : Application unfound", Toast.LENGTH_SHORT).show()
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(webUrl))
+        ctx.startActivity(intent)
+    }
+}

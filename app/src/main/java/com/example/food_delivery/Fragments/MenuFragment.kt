@@ -6,52 +6,108 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
+import com.example.food_delivery.*
+import com.example.food_delivery.Adapters.adapterRestaurants
+import com.example.food_delivery.Utils.DataType.MenuData
 import com.example.food_delivery.Utils.DataType.MenusData
+import com.example.food_delivery.Utils.DataType.RestaurantsData
+import com.example.food_delivery.ViewModal.MenuModal
 import com.example.food_delivery.databinding.FragmentDetailsBinding
+import com.example.food_delivery.services.menusServiceAPI
+import com.example.food_delivery.services.restaurantServiceAPI
+import com.example.movieexample.viewmodel.RestaurantModal
+import kotlinx.coroutines.*
 
 
 class menuFragment : Fragment() {
 
     lateinit var binding: FragmentDetailsBinding
+    lateinit var menuModal: MenuModal
+    lateinit var restModal : RestaurantModal
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
         // Inflate the layout for this fragment
         // Inflate the layout for this fragment
         binding = FragmentDetailsBinding.inflate(layoutInflater)
-        binding.recyclerView.layoutManager = LinearLayoutManager(requireActivity())
-        val args = arguments;
-        binding.recyclerView.adapter = adapterMenus(requireActivity(),loadData(args?.getInt("rest")!!))
         val root = binding.root
         return root
     }
 
-    fun loadData(rest : Int):List<MenusData> {
-        val data = mutableListOf<MenusData>()
-        val menu1 = MenusData(rest,
-            "Tacos $rest","https://th.bing.com/th/id/OIP.jQSXXB90bSSpR-4yenJnZgHaE8?w=247&h=180&c=7&r=0&o=5&dpr=1.1&pid=1.7","description of menu","20.00".toFloat())
-        val menu2 = MenusData(rest ,
-            "Pizza $rest","https://th.bing.com/th/id/OIP.B0j8_LEhso7zqJFBU8N8lAHaJQ?w=154&h=191&c=7&r=0&o=5&dpr=1.1&pid=1.7","description of menu","20.00".toFloat())
-        val menu3 = MenusData(rest,
-            "Burger $rest","https://th.bing.com/th/id/OIP.KGfic2kvFnf5skbqNJPe5AHaE8?w=281&h=187&c=7&r=0&o=5&dpr=1.1&pid=1.7","description of menu","20.00".toFloat())
-        val menu4 = MenusData(rest,
-            "Sardine $rest","https://th.bing.com/th/id/OIP.o5XlxrIzHvNheFjA-soMlwHaE6?w=298&h=198&c=7&r=0&o=5&dpr=1.1&pid=1.7","description of menu","20.00".toFloat())
-        val menu5 = MenusData(rest,
-            "Couscous $rest","https://th.bing.com/th/id/OIP.679y5k1YMt9f5DoNljWmnAHaFj?w=257&h=193&c=7&r=0&o=5&dpr=1.1&pid=1.7","description of menu","20.00".toFloat())
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding.recyclerView.layoutManager = LinearLayoutManager(requireActivity())
+        menuModal = ViewModelProvider(requireActivity()).get(MenuModal::class.java)
+        restModal = ViewModelProvider(requireActivity()).get(RestaurantModal::class.java)
+        val args = arguments;
+        val adapter = adapterMenus(requireActivity())
+        binding.recyclerView.adapter = adapter
+        //loadRest(args?.getString("id")!!)
+        restModal.loadRest(args?.getString("id")!!)
+        restModal.restaurant.observe(requireActivity()) { rest ->
+            binding.apply {
+
+                Glide.with(requireActivity())
+                    .load(rest.logoUrl)
+                    .into(imgRest)
+                nameRest.text = rest.name
+            }
+        }
+
+        menuModal.loadMenus(args?.getString("id")!!)
+        menuModal.menus.observe(requireActivity()) { menus ->
+            adapter.setMenus(menus)
+        }
+        // loading observer
+        menuModal.loading.observe(requireActivity()) { loading ->
+            if (loading) {
+                binding.progressBarMenus.visibility = View.VISIBLE
+            } else {
+                binding.progressBarMenus.visibility = View.GONE
+            }
+        }
 
 
-        data.add(menu1)
-        data.add(menu2)
-        data.add(menu3)
-        data.add(menu4)
-        data.add(menu5)
+        menuModal.errorMessage.observe(requireActivity()) { errorMessaage ->
+            Toast.makeText(requireContext(), errorMessaage, Toast.LENGTH_SHORT).show()
+        }
 
 
-        return data
+
+        binding.apply {
+            back.setOnClickListener {
+                it.findNavController().navigateUp()
+            }
+            fb.setOnClickListener {
+                openFb(requireActivity(), restModal.restaurant.value!!.fbUrl, restModal.restaurant.value!!.fbUrl!!)
+            }
+            map.setOnClickListener {
+                openMap(requireActivity(), restModal.restaurant.value!!.mapX!!, restModal.restaurant.value!!.mapY!!)
+            }
+            insta.setOnClickListener {
+                openInsta(requireActivity(), restModal.restaurant.value!!.instApp!!,restModal.restaurant.value!!.instUrl!!)
+            }
+            phone.setOnClickListener {
+                call(requireActivity(), restModal.restaurant.value!!.phone!!)
+            }
+            mail.setOnClickListener {
+                mailTo(requireActivity(),restModal.restaurant.value!!.email!!)
+            }
+        }
     }
+
+
+
+
+
 
 
 }

@@ -27,15 +27,22 @@ class bagFragment : Fragment() {
         binding = FragmentBagBinding.inflate(layoutInflater)
         binding.recyclerView.layoutManager = LinearLayoutManager(requireActivity())
         val args = arguments
-        data = loadData(args?.getInt("rest")!!);
-        adapter = adapterBag(requireActivity(),data,::deleteItem)
-        binding.recyclerView.adapter = adapter
-        binding.valid.setOnClickListener {
-            val db = AppDatabase.buildDatabase(requireActivity());
-            db?.getBagDao()?.deleteByRest(args?.getInt("rest")!!);
-            it.findNavController().navigate(R.id.action_bagFragment_to_profileFragment);
+        data = loadData(args?.getString("rest")!!);
 
+        adapter =  adapterBag(requireActivity(),data,::deleteItem)
+        binding.recyclerView.adapter = adapter
+        binding.apply {
+            navigateUp.setOnClickListener {
+                it.findNavController().navigateUp()
+            }
+            valid.setOnClickListener {
+                val db = AppDatabase.buildDatabase(requireActivity());
+                db?.getBagDao()?.deleteByRest(args?.getInt("rest")!!);
+                it.findNavController().navigate(R.id.action_bagFragment_to_profileFragment);
+
+            }
         }
+
 
 
 
@@ -43,7 +50,7 @@ class bagFragment : Fragment() {
         return root
     }
 
-    fun loadData(rest : Int):List<Bag> {
+    fun loadData(rest : String):List<Bag> {
         var data : List<Bag> = listOf();
         try {
             val db = AppDatabase.buildDatabase(requireActivity());

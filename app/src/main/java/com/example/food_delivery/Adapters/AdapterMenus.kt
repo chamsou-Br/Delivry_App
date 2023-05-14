@@ -11,64 +11,61 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.food_delivery.*
 import com.example.food_delivery.Utils.AppDatabase
+import com.example.food_delivery.Utils.DataType.MenuData
 import com.example.food_delivery.Utils.DataType.MenusData
+import com.example.food_delivery.Utils.DataType.RestaurantsData
+import com.example.food_delivery.databinding.BagLayoutBinding
 import com.example.food_delivery.databinding.MenuLayoutBinding
 import com.example.food_delivery.modals.Entity.Bag
 
-class adapterMenus(val ctx : Context,val data:List<MenusData>):RecyclerView.Adapter<adapterMenus.MyViewHolder>() {
+class adapterMenus(val ctx : Context):RecyclerView.Adapter<adapterMenus.MyViewHolder>() {
+
+    var data = mutableListOf<MenuData>()
+
+    fun setMenus(data: List<MenuData>) {
+        this.data = data.toMutableList()
+        notifyDataSetChanged()
+    }
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
+        return  adapterMenus.MyViewHolder(
+            MenuLayoutBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            )
+        )
         return MyViewHolder(MenuLayoutBinding.inflate(LayoutInflater.from(parent.context)) )
     }
 
     override fun getItemCount() = data.size
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        val nameMenu =  data[position].name
-        val avg = data[position].avg
-        val logoUrl = data[position].logoUrl
-        val rest = data[position].rest
-        val desc = data[position].desc
+
 
         holder.itemView.setOnClickListener {
             val bundle = Bundle()
-            bundle.putInt("id", position)
-            bundle.putString("logoUrl" ,logoUrl)
-            bundle.putString("name" ,nameMenu)
-            bundle.putFloat("avg" ,avg)
-            bundle.putInt("rest",rest)
+            bundle.putString("id",data[position]._id);
             it.findNavController().navigate(R.id.action_detailsFragment_to_detailMenuFragment,bundle)
         }
 
         holder.binding.apply {
-            name.text =   nameMenu;
-            descr.text = desc
-            price.text = avg.toString()
+            name.text =   data[position].name;
+            price.text = "$ " + data[position].avg
+            typeMenu.text = data[position].type
             Glide.with(holder.itemView.context)
-                .load(logoUrl)
+                .load(data[position].logoUrl)
                 .into(logo)
-            //logo.setImageResource(R.drawable.foo)
-            addToBag.setOnClickListener {
-                val db = AppDatabase.buildDatabase(ctx);
-                if (db?.getBagDao()?.getBagByName(nameMenu)?.size == 0) {
-                    val bag = Bag(name = nameMenu,price = avg, logoUrl =  logoUrl,descr =  desc,qty = 1,rest = rest)
-                    db?.getBagDao()?.addBag(bag);
-                }else {
-                    var bag = db?.getBagDao()?.getBagByName(nameMenu)?.get(0)
-                    bag?.qty = bag?.qty?.plus(1)
-                    db?.getBagDao()?.updateBag(bag!!)
-                }
-                val message = "commades is added to bag *_*" // the message to display
-                val duration = Toast.LENGTH_SHORT // the duration of the message (short or long)
-                val toast = Toast.makeText(ctx, message, duration)
-                toast.show()
-            }
+
         }
+
     }
 
 
     class MyViewHolder(val binding: MenuLayoutBinding) : RecyclerView.ViewHolder(binding.root)
 
 }
+
 
 

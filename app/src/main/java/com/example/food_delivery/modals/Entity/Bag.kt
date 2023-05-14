@@ -6,13 +6,13 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class Bag(
-    @PrimaryKey(autoGenerate = true)
-    val id: Int = 0,
+    @PrimaryKey
+    val id: String,
     @ColumnInfo(name = "name") val name: String?,
     @ColumnInfo(name = "price") var price: Float?,
     @ColumnInfo(name = "logoUrl") val logoUrl: String?,
     @ColumnInfo(name = "descr") val descr: String?,
     @ColumnInfo(name = "qty") var qty: Int?,
-    @ColumnInfo(name = "rest") val rest: Int?,
+    @ColumnInfo(name = "rest") val rest: String?,
 
     )

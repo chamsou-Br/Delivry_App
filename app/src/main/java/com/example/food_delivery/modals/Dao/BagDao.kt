@@ -11,7 +11,7 @@ import com.example.food_delivery.modals.Entity.Bag
 interface bagDao {
 
     @Query("SELECT * FROM Bag where rest= :rest")
-    fun getAllBags(rest : Int): List<Bag>
+    fun getAllBags(rest : String): List<Bag>
 
     @Query("SELECT * FROM Bag")
     fun getAllBags(): List<Bag>

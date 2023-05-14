@@ -43,7 +43,8 @@
         tools:layout="@layout/fragment_login" >
         <action
             android:id="@+id/action_loginFragment_to_bagFragment2"
-            app:destination="@id/bagFragment" />
+            app:destination="@id/bagFragment"
+            app:popUpTo="@id/detailMenuFragment" />
     </fragment>
     <fragment
         android:id="@+id/bagFragment"

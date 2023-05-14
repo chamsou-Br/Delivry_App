@@ -42,10 +42,9 @@ class BagTest {
 
     @Test
     fun testDeleteByRst() {
-        bag = Bag(id=96,name = "Frite",price = 20.0.toFloat(), logoUrl =  "logo",descr =  "desc",qty = 1,rest = 99)
-        db?.getBagDao()?.addBag(bag)
-        bag = Bag(id=95,name = "Frite",price = 20.0.toFloat(), logoUrl =  "logo",descr =  "desc",qty = 1,rest = 99)
-        db?.getBagDao()?.addBag(bag)
+        val bag1 = Bag(id=96,name = "Frite",price = 20.0.toFloat(), logoUrl =  "logo",descr =  "desc",qty = 1,rest = 99)
+        val bag2 = Bag(id=95,name = "Frite",price = 20.0.toFloat(), logoUrl =  "logo",descr =  "desc",qty = 1,rest = 99)
+        db?.getBagDao()?.addBag(bag1,bag2)
         db?.getBagDao()?.deleteByRest(bag.rest!!);
         val list = db?.getBagDao()?.getAllBags();
         assertEquals(0,list?.size)

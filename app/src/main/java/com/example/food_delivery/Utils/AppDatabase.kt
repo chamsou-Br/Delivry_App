@@ -9,10 +9,9 @@ import com.example.food_delivery.modals.Dao.userDao
 import com.example.food_delivery.modals.Entity.Bag
 import com.example.food_delivery.modals.Entity.User
 
-@Database(entities = [User::class , Bag::class], version = 1)
+@Database(entities = [Bag::class], version = 1)
 abstract class AppDatabase : RoomDatabase() {
 
-    abstract fun getUserDao(): userDao
     abstract fun getBagDao() : bagDao
 
     companion object {
@@ -21,7 +20,7 @@ abstract class AppDatabase : RoomDatabase() {
             if (INSTANCE == null) {
                 INSTANCE =
                     Room.databaseBuilder(context, AppDatabase::class.java,
-                        "db_rest4").allowMainThreadQueries().build() }
+                        "db_rest6").allowMainThreadQueries().build() }
             return INSTANCE
         }
     }

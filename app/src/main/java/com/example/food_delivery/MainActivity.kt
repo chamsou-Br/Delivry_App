@@ -16,6 +16,7 @@ class MainActivity : AppCompatActivity() {
         binding= ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+        actionBar?.hide()
         try {
             val db = AppDatabase.buildDatabase(this);
             val user = User(100,"chamsou","berkane","jc_berkane@esi.dz","chamsou2002");
