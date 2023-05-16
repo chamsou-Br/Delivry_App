@@ -10,11 +10,20 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.food_delivery.Utils.AppDatabase
 import com.example.food_delivery.R
+import com.example.food_delivery.Utils.DataType.MenuData
 import com.example.food_delivery.databinding.BagLayoutBinding
 import com.example.food_delivery.databinding.MovieLayoutBinding
 import com.example.food_delivery.modals.Entity.Bag
 
-class adapterBag(val ctx : Context, val data:List<Bag>, val deleteItem: (Int) -> Unit): RecyclerView.Adapter<adapterBag.MyViewHolder>() {
+class adapterBag(val ctx : Context, val deleteItem: (Int) -> Unit): RecyclerView.Adapter<adapterBag.MyViewHolder>() {
+
+
+    var data = mutableListOf<Bag>()
+
+    fun setBag(data: List<Bag>) {
+        this.data = data.toMutableList()
+        notifyDataSetChanged()
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         return adapterBag.MyViewHolder(
@@ -44,12 +53,7 @@ class adapterBag(val ctx : Context, val data:List<Bag>, val deleteItem: (Int) ->
                 .load(data[position].logoUrl)
                 .into(logo)
             delete.setOnClickListener {
-                val db = AppDatabase.buildDatabase(holder.itemView.context);
-                db?.getBagDao()?.delete(data[position])
-                holder.itemView.visibility = View.INVISIBLE
                 deleteItem(position)
-                notifyItemRangeRemoved(position,data.size)
-
             }
            plusContainer.setOnClickListener {
                qty.text = (qty.text.toString().toInt() + 1).toString()

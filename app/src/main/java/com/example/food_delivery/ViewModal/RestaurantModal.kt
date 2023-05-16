@@ -16,42 +16,51 @@ class RestaurantModal:ViewModel() {
     val errorMessage = MutableLiveData<String>()
 
     val exceptionHandler = CoroutineExceptionHandler { coroutineContext, throwable ->
-        loading.value = false
-        errorMessage.value = "Une erreur s'est produite"
+        CoroutineScope(Dispatchers.Main).launch   {
+            loading.value = false
+            errorMessage.value = "Une erreur s'est produite 1" + throwable
+            println("data")
+            println(throwable)
+        }
     }
 
     fun loadRests (){
         if(restaurants.value==null) {
-            loading.value = true
+            loading.postValue(true)
             CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-                val response = restaurantServiceAPI.createRestaurantServiceAPI().getAllRestaurants()
+               val response = restaurantServiceAPI.createRestaurantServiceAPI().getAllRestaurants()
+
                 withContext(Dispatchers.Main) {
-                    loading.value = false
+                    loading.postValue(false)
                     if (response.isSuccessful && response.body() != null) {
-                        restaurants.value = response.body()
+                        println(response.body())
+                        restaurants.postValue(response.body())
                     } else {
-                        errorMessage.value = "Une erreur s'est produite"
+                        errorMessage.value = "Une erreur s'est produite 2"
                     }
                 }
+
+
             }
         }
     }
 
     fun loadRest(id : String) {
-        if(restaurant.value==null) {
+        if (restaurant.value == null || restaurant.value!!._id != id){
             loading.value = true
             CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-                val response = restaurantServiceAPI.createRestaurantServiceAPI().getRestaurantById(id)
+                val response =
+                    restaurantServiceAPI.createRestaurantServiceAPI().getRestaurantById(id)
                 withContext(Dispatchers.Main) {
                     loading.value = false
                     if (response.isSuccessful && response.body() != null) {
                         restaurant.value = response.body()
                     } else {
-                        errorMessage.value = "Une erreur s'est produite"
+                        errorMessage.value = "Une erreur s'est produite 3"
                     }
                 }
             }
-        }
+            }
     }
 
 }

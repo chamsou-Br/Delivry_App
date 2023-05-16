@@ -13,23 +13,59 @@ import kotlinx.coroutines.*
 
 class MenuModal:ViewModel() {
     val menus = MutableLiveData<List<MenuData>>()
+    val menu = MutableLiveData<MenuData>()
     val loading = MutableLiveData<Boolean>()
     val errorMessage = MutableLiveData<String>()
 
     val exceptionHandler = CoroutineExceptionHandler { coroutineContext, throwable ->
-        loading.value = false
-        errorMessage.value = "Une erreur s'est produite"
+        CoroutineScope(Dispatchers.Main).launch {
+            loading.value = false
+            errorMessage.value = "Une erreur s'est produite"
+        }
     }
 
     fun loadMenus (id : String){
-        if(menus.value==null) {
+    if (menus.value == null || menus.value!!.isEmpty() || menus.value!![0].rest != id) {
+        loading.value = true
+        CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
+            val response = menusServiceAPI.createMenuServiceAPI().getMenusOfRest(id);
+            withContext(Dispatchers.Main) {
+                loading.value = false
+                if (response.isSuccessful && response.body() != null) {
+                    menus.value = response.body()
+                } else {
+                    errorMessage.value = "Une erreur s'est produite"
+                }
+            }
+        }
+    }
+    }
+
+
+
+    fun loadMenu (id : String) {
+        if (menu.value == null || menu.value!!._id != id) {
             loading.value = true
             CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-                val response = menusServiceAPI.createMenuServiceAPI().getMenusOfRest(id);
+                val response = menusServiceAPI.createMenuServiceAPI().getMenusById(id);
                 withContext(Dispatchers.Main) {
                     loading.value = false
                     if (response.isSuccessful && response.body() != null) {
-                        menus.value = response.body()
+                        var body = response.body()
+                        if (body != null) {
+                            menu.value = MenuData(
+                                _id = body._id,
+                                rest = body.rest,
+                                name = body.name,
+                                logoUrl = body.logoUrl,
+                                desc = body.desc,
+                                avg = body.avg,
+                                type = body.type,
+                                calories = body.calories,
+                                size = body.size,
+                                cooking = body.cooking
+                            )
+                        }
                     } else {
                         errorMessage.value = "Une erreur s'est produite"
                     }
@@ -37,4 +73,7 @@ class MenuModal:ViewModel() {
             }
         }
     }
+
+
+
 }

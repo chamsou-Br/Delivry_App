@@ -35,25 +35,22 @@ class restaurantFragment : Fragment() {
         binding.recyclerView.adapter = adapter
         RestModal.loadRests()
 
-        RestModal.restaurants.observe(requireActivity(),  {  rests ->
-            adapter.setRestaurants(rests)
-        })
+        RestModal.restaurants.observe(requireActivity()) { rests ->
+                adapter.setRestaurants(rests!!)
+        }
         // loading observer
         RestModal.loading.observe(requireActivity(), { loading ->
-            if(loading) {
+            if (loading) {
                 binding.progressBar.visibility = View.VISIBLE
-            }
-            else {
+            } else {
                 binding.progressBar.visibility = View.GONE
             }
         })
 
-
         RestModal.errorMessage.observe(requireActivity(), { errorMessaage ->
-            Toast.makeText(requireContext(),errorMessaage,Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), errorMessaage, Toast.LENGTH_SHORT).show()
         })
 
-        requireActivity().actionBar?.hide()
         val root = binding.root
         return root
     }
