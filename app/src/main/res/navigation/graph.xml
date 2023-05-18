@@ -37,16 +37,6 @@
             app:destination="@id/bagFragment" />
     </fragment>
     <fragment
-        android:id="@+id/loginFragment"
-        android:name="com.example.food_delivery.Fragments.loginFragment"
-        android:label="fragment_login"
-        tools:layout="@layout/fragment_login" >
-        <action
-            android:id="@+id/action_loginFragment_to_bagFragment2"
-            app:destination="@id/bagFragment"
-            app:popUpTo="@id/detailMenuFragment" />
-    </fragment>
-    <fragment
         android:id="@+id/bagFragment"
         android:name="com.example.food_delivery.Fragments.bagFragment"
         android:label="fragment_bag"

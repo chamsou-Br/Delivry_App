@@ -3,6 +3,8 @@
     <color name="colorPrimary">#FF4E01</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
+    <color name="crimson" >#ff2727</color>
+    <color name="bleu">#6495ed</color>
     <color name="black">#000000</color>
     <color name="black_gray">#828485</color>
     <color name="gray">#D3D3D3</color>

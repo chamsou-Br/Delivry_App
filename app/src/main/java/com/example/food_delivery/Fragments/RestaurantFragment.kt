@@ -1,5 +1,6 @@
 package com.example.food_delivery.Fragments
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -10,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.food_delivery.Utils.DataType.RestaurantsData
 import com.example.food_delivery.Adapters.adapterRestaurants
+import com.example.food_delivery.AuthActivity
 import com.example.food_delivery.databinding.FragmentMainBinding
 import com.example.food_delivery.services.restaurantServiceAPI
 import com.example.movieexample.viewmodel.RestaurantModal
@@ -35,25 +37,26 @@ class restaurantFragment : Fragment() {
         binding.recyclerView.adapter = adapter
         RestModal.loadRests()
 
-        RestModal.restaurants.observe(requireActivity(),  {  rests ->
-            adapter.setRestaurants(rests)
-        })
+        RestModal.restaurants.observe(requireActivity()) { rests ->
+                adapter.setRestaurants(rests!!)
+        }
         // loading observer
         RestModal.loading.observe(requireActivity(), { loading ->
-            if(loading) {
+            if (loading) {
                 binding.progressBar.visibility = View.VISIBLE
-            }
-            else {
+            } else {
                 binding.progressBar.visibility = View.GONE
             }
         })
 
-
         RestModal.errorMessage.observe(requireActivity(), { errorMessaage ->
-            Toast.makeText(requireContext(),errorMessaage,Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), errorMessaage, Toast.LENGTH_SHORT).show()
         })
 
-        requireActivity().actionBar?.hide()
+        binding.logOut.setOnClickListener {
+            val intent = Intent(requireActivity(), AuthActivity::class.java)
+            startActivity(intent)
+        }
         val root = binding.root
         return root
     }

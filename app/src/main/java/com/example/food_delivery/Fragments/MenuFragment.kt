@@ -50,18 +50,17 @@ class menuFragment : Fragment() {
         val args = arguments;
         val adapter = adapterMenus(requireActivity())
         binding.recyclerView.adapter = adapter
-        //loadRest(args?.getString("id")!!)
         restModal.loadRest(args?.getString("id")!!)
         restModal.restaurant.observe(requireActivity()) { rest ->
             binding.apply {
-
-                Glide.with(requireActivity())
+                if (isAdded) {
+                      Glide.with(requireActivity())
                     .load(rest.logoUrl)
                     .into(imgRest)
+                }
                 nameRest.text = rest.name
             }
         }
-
         menuModal.loadMenus(args?.getString("id")!!)
         menuModal.menus.observe(requireActivity()) { menus ->
             adapter.setMenus(menus)
@@ -70,14 +69,16 @@ class menuFragment : Fragment() {
         menuModal.loading.observe(requireActivity()) { loading ->
             if (loading) {
                 binding.progressBarMenus.visibility = View.VISIBLE
+                binding.view.visibility = View.GONE
             } else {
                 binding.progressBarMenus.visibility = View.GONE
+                binding.view.visibility = View.VISIBLE
             }
         }
 
 
         menuModal.errorMessage.observe(requireActivity()) { errorMessaage ->
-            Toast.makeText(requireContext(), errorMessaage, Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), errorMessaage, Toast.LENGTH_LONG).show()
         }
 
 
