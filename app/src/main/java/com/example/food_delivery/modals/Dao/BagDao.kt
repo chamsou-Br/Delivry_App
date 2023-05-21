@@ -33,5 +33,5 @@ interface bagDao {
     fun delete(bag: Bag)
 
     @Query("DELETE FROM Bag where rest = :rest")
-    fun deleteByRest(rest : Int)
+    fun deleteByRest(rest : String)
 }

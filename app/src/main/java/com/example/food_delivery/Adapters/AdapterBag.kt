@@ -15,7 +15,7 @@ import com.example.food_delivery.databinding.BagLayoutBinding
 import com.example.food_delivery.databinding.MovieLayoutBinding
 import com.example.food_delivery.modals.Entity.Bag
 
-class adapterBag(val ctx : Context, val deleteItem: (Int) -> Unit): RecyclerView.Adapter<adapterBag.MyViewHolder>() {
+class adapterBag(val ctx : Context, val deleteItem: (Int) -> Unit , val addQtyToBag : (String) -> Unit , val deleteQtyFromBag : (String) -> Unit): RecyclerView.Adapter<adapterBag.MyViewHolder>() {
 
 
     var data = mutableListOf<Bag>()
@@ -57,18 +57,12 @@ class adapterBag(val ctx : Context, val deleteItem: (Int) -> Unit): RecyclerView
             }
            plusContainer.setOnClickListener {
                qty.text = (qty.text.toString().toInt() + 1).toString()
-               var bag = db?.getBagDao()?.getBagByName(data[position].name)?.get(0)
-               bag?.qty = bag?.qty?.plus(1)
-               price.text = "$ " +  (bag?.price!! * bag?.qty!!.toFloat() ).toString()
-               db?.getBagDao()?.updateBag(bag!!)
+               addQtyToBag(data[position].name!!)
            }
            minusContainer.setOnClickListener {
                if (qty.text.toString().toInt() > 1) {
                    qty.text = (qty.text.toString().toInt() - 1).toString()
-                   var bag = db?.getBagDao()?.getBagByName(data[position].name)?.get(0)
-                   bag?.qty = bag?.qty?.minus(1)
-                   price.text = "$ " +  (bag?.price!! * bag?.qty!!.toFloat() ).toString()
-                   db?.getBagDao()?.updateBag(bag!!)
+                   deleteQtyFromBag(data[position].name!!)
                }
            }
         }

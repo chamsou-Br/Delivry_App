@@ -198,7 +198,7 @@
                     app:layout_constraintStart_toStartOf="parent" />
 
                 <TextView
-                    android:id="@+id/textView14"
+                    android:id="@+id/priceTotalValue"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="24dp"
@@ -215,8 +215,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="24dp"
-                    android:text="$ 3.00"
                     android:fontFamily="sans-serif-smallcaps"
+                    android:text="$ 0.00"
                     android:textColor="@color/dark"
                     android:textSize="16dp"
                     android:textStyle="bold"
@@ -228,8 +228,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="24dp"
-                    android:text="- $ 3.00"
                     android:fontFamily="sans-serif-smallcaps"
+                    android:text="- $ 0.00"
                     android:textColor="@color/dark"
                     android:textSize="16dp"
                     android:textStyle="bold"

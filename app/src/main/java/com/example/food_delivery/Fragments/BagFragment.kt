@@ -1,5 +1,6 @@
 package com.example.food_delivery.Fragments
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -35,24 +36,37 @@ class bagFragment : Fragment() {
         val args = arguments
 
         //data = loadData(args?.getString("rest")!!);
-        adapter =  adapterBag(requireActivity(),::deleteItem)
+        adapter =  adapterBag(requireActivity(),::deleteItem,::addQtyToBag , ::deleteQtyFromBag)
         binding.recyclerView.adapter = adapter
         bagModal = ViewModelProvider(requireActivity()).get(BagModal::class.java)
         bagModal.loadBags(requireActivity(),args?.getString("rest")!!)
         bagModal.bags.observe(requireActivity()) { bags ->
             adapter.setBag(bags)
+            var price = 0.0;
+            bagModal.bags.value?.forEach { bag ->
+                price += bag.price!! * bag.qty!!
+            }
+            binding.subTotalValue.text = "$ " + price.toString();
+            binding.priceTotalValue.text = "$ " + price.toString();
         }
         binding.apply {
             navigateUp.setOnClickListener {
                 it.findNavController().navigateUp()
             }
             valid.setOnClickListener {
-                val db = AppDatabase.buildDatabase(requireActivity());
-                db?.getBagDao()?.deleteByRest(args?.getInt("rest")!!);
-                it.findNavController().navigate(R.id.action_bagFragment_to_profileFragment);
-
-
-
+                val pref = requireActivity().getSharedPreferences("food_delivry", Context.MODE_PRIVATE)
+                if (pref.contains("connected")) {
+                 /*   val db = AppDatabase.buildDatabase(requireActivity());
+                    db?.getBagDao()?.deleteByRest(args?.getInt("rest")!!);
+                    println(pref.getBoolean("connected",true))
+                 */
+                    val bundle = Bundle()
+                    bundle.putString("id",args?.getString("rest")!!)
+                    it.findNavController().navigate(R.id.action_bagFragment_to_validateFragment,bundle);
+                } else {
+                    val intent = Intent(requireActivity(), AuthActivity::class.java)
+                    startActivity(intent)
+                }
             }
         }
 
@@ -65,6 +79,13 @@ class bagFragment : Fragment() {
     fun deleteItem(position: Int) {
 
         bagModal.deleteBags(requireActivity(), bagModal.bags.value!![position])
+    }
+
+    fun addQtyToBag(name : String){
+        bagModal.addQtyToBag(requireActivity(),name)
+    }
+    fun deleteQtyFromBag(name : String){
+        bagModal.deleteQtyFromBag(requireActivity() , name);
     }
 
 }

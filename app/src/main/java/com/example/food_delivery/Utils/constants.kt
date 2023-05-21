@@ -2,7 +2,7 @@ package com.example.food_delivery.Utils
 
 import com.example.food_delivery.Utils.DataType.RestaurantsData
 
-const val url = "https://example-com-food-delivry.onrender.com"
+const val url =  "https://example-com-food-delivry.onrender.com"
 
 /*
 fun loadData():List<RestaurantsData> {

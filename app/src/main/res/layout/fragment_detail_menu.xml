@@ -400,10 +400,10 @@
                 android:layout_height="match_parent">
 
                 <ImageView
-                    android:id="@+id/imageView16"
+                    android:id="@+id/imageView10"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
-                    android:src="@drawable/heart"
+                    android:src="@drawable/ic_bag"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"

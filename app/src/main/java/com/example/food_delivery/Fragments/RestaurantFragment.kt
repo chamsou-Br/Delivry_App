@@ -1,5 +1,6 @@
 package com.example.food_delivery.Fragments
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -8,10 +9,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.food_delivery.Utils.DataType.RestaurantsData
 import com.example.food_delivery.Adapters.adapterRestaurants
 import com.example.food_delivery.AuthActivity
+import com.example.food_delivery.R
+import com.example.food_delivery.Utils.AppDatabase
 import com.example.food_delivery.databinding.FragmentMainBinding
 import com.example.food_delivery.services.restaurantServiceAPI
 import com.example.movieexample.viewmodel.RestaurantModal
@@ -30,6 +34,7 @@ class restaurantFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
+
         binding = FragmentMainBinding.inflate(layoutInflater)
         binding.recyclerView.layoutManager = LinearLayoutManager(requireActivity())
         RestModal = ViewModelProvider(requireActivity()).get(RestaurantModal::class.java)
@@ -54,9 +59,21 @@ class restaurantFragment : Fragment() {
         })
 
         binding.logOut.setOnClickListener {
-            val intent = Intent(requireActivity(), AuthActivity::class.java)
-            startActivity(intent)
+            val pref = requireActivity().getSharedPreferences("food_delivry", Context.MODE_PRIVATE)
+            if (pref.contains("connected")) {
+                val pref2 = requireContext().getSharedPreferences("food_delivry", Context.MODE_PRIVATE).edit()
+                pref2.remove("connected")
+                pref2.remove("token_food_delivry")
+                pref2.apply()
+                val intent = Intent(requireActivity(), AuthActivity::class.java)
+                startActivity(intent)
+            } else {
+                val intent = Intent(requireActivity(), AuthActivity::class.java)
+                startActivity(intent)
+            }
         }
+
+
         val root = binding.root
         return root
     }

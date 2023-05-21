@@ -23,6 +23,12 @@
             android:id="@+id/action_mainFragment_to_detailsFragment"
             app:destination="@id/detailsFragment"
             app:popUpTo="@id/mainFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_validateFragment"
+            app:destination="@id/validateFragment" />
     </fragment>
     <fragment
         android:id="@+id/detailMenuFragment"
@@ -47,6 +53,9 @@
         <action
             android:id="@+id/action_bagFragment_to_detailMenuFragment"
             app:destination="@id/detailMenuFragment" />
+        <action
+            android:id="@+id/action_bagFragment_to_validateFragment"
+            app:destination="@id/validateFragment" />
     </fragment>
     <fragment
         android:id="@+id/profileFragment"
@@ -58,6 +67,18 @@
             app:destination="@id/loginFragment" />
         <action
             android:id="@+id/action_profileFragment_to_mainFragment"
+            app:destination="@id/mainFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/validateFragment"
+        android:name="com.example.food_delivery.Fragments.validateFragment"
+        android:label="fragment_validate"
+        tools:layout="@layout/fragment_validate" >
+        <action
+            android:id="@+id/action_validateFragment_to_bagFragment"
+            app:destination="@id/bagFragment" />
+        <action
+            android:id="@+id/action_validateFragment_to_mainFragment"
             app:destination="@id/mainFragment" />
     </fragment>
 </navigation>

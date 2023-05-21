@@ -25,10 +25,10 @@ class ProfileFragment : Fragment() {
             it.findNavController().navigate(R.id.action_profileFragment_to_mainFragment);
         }
         binding.logout.setOnClickListener {
-            val pref = requireContext().getSharedPreferences("fileName", Context.MODE_PRIVATE).edit()
+            val pref = requireContext().getSharedPreferences("food_delivry", Context.MODE_PRIVATE).edit()
             pref.remove("connected")
             pref.apply()
-            it.findNavController().navigate(R.id.action_profileFragment_to_loginFragment);
+            it.findNavController().navigate(R.id.action_profileFragment_to_mainFragment);
         }
         return binding.root
     }

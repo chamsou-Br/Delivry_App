@@ -34,6 +34,22 @@ class BagModal: ViewModel() {
         }
     }
 
+    fun addQtyToBag(context: Context , name : String){
+        val db = AppDatabase.buildDatabase(context);
+        var bag = db?.getBagDao()?.getBagByName(name)?.get(0)
+        bag?.qty = bag?.qty?.plus(1)
+        db?.getBagDao()?.updateBag(bag!!)
+        bags.value  = db?.getBagDao()?.getAllBags(bag?.rest!!)!!
+    }
+
+    fun deleteQtyFromBag(context: Context , name : String){
+        val db = AppDatabase.buildDatabase(context);
+        var bag = db?.getBagDao()?.getBagByName(name)?.get(0)
+        bag?.qty = bag?.qty?.minus(1)
+        db?.getBagDao()?.updateBag(bag!!)
+        bags.value  = db?.getBagDao()?.getAllBags(bag?.rest!!)!!
+    }
+
     fun addToBag(context: Context,data: MenuData,qty : Int){
         val db = AppDatabase.buildDatabase(context);
         if (db?.getBagDao()?.getBagByName(data?.name)?.size == 0) {
@@ -46,4 +62,12 @@ class BagModal: ViewModel() {
         }
     }
 
+    fun deleteBagsOfRest(context: Context , rest : String){
+        try {
+            val db = AppDatabase.buildDatabase(context);
+            db?.getBagDao()?.deleteByRest(rest);
+        }catch  (err : java.lang.Error) {
+            errorMessage.value = "Une erreur s'est produite"
+        }
+    }
 }

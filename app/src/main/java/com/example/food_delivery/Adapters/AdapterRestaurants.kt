@@ -39,6 +39,9 @@ class adapterRestaurants(val ctx : Context):RecyclerView.Adapter<adapterRestaura
             val bundle = Bundle()
             bundle.putInt("rest",position)
             bundle.putString("id",data[position]._id)
+            val pref = ctx.getSharedPreferences("food_delivry", Context.MODE_PRIVATE).edit()
+            pref.putString("rest",data[position]._id)
+            pref.apply()
             it.findNavController().navigate(R.id.action_mainFragment_to_detailsFragment,bundle)
         }
         holder.binding.apply {
