@@ -2,9 +2,13 @@ package com.example.food_delivery
 
 import android.content.Context
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.NavigationUI
 import com.example.food_delivery.Fragments.bagFragment
 import com.example.food_delivery.Utils.AppDatabase
 import com.example.food_delivery.databinding.ActivityMainBinding
@@ -14,7 +18,8 @@ import com.example.food_delivery.modals.Entity.User
 class MainActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityMainBinding
-    lateinit var navController:NavController
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding= ActivityMainBinding.inflate(layoutInflater)
@@ -40,13 +45,22 @@ class MainActivity : AppCompatActivity() {
             println(pref.getString("rest",null))
             navController.navigate(R.id.action_mainFragment_to_validateFragment,bundle)
         }
-
+        NavigationUI.setupWithNavController(binding.navBottom,navController)
         val view = binding.root
         setContentView(view)
 
 
 
     }
+
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        val inflater: MenuInflater = menuInflater
+        inflater.inflate(R.menu.overflow_menw, menu)
+        return true
+    }
+
+
 
 
 

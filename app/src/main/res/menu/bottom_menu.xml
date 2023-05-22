@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <item
+        android:id="@+id/navigation_item1"
+        android:enabled="true"
+        android:icon="@drawable/ic_home_drawer"
+        android:title="First"
+        android:visible="true" />
+
+    <item
+        android:id="@+id/reviewFragment"
+        android:enabled="true"
+        android:icon="@drawable/facebook"
+        android:title="Second"
+        android:visible="true" />
+
+    <item
+        android:id="@+id/profileFragment"
+        android:enabled="true"
+        android:icon="@drawable/ic_back"
+        android:title="Third"
+        android:visible="true" />
+</menu>
