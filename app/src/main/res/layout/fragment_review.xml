@@ -21,7 +21,6 @@
                     android:layout_width="50dp"
                     android:layout_height="70dp"
                     android:layout_marginTop="16dp"
-                    android:cardBackgroundColor="@android:color/white"
                     app:cardCornerRadius="10dp"
                     app:layout_constraintEnd_toStartOf="@+id/rating2"
                     app:layout_constraintHorizontal_bias="0.5"
@@ -294,7 +293,7 @@
 
 
                         <TextView
-                            android:id="@+id/titleFinishButton"
+                            android:id="@+id/editProfile"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="-40dp"
@@ -316,7 +315,7 @@
                             android:background="@color/white"
                             android:src="@drawable/ic_baseline_arrow_right_24"
                             app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintStart_toEndOf="@+id/titleFinishButton"
+                            app:layout_constraintStart_toEndOf="@+id/editProfile"
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <ProgressBar

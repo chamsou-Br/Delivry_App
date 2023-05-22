@@ -45,6 +45,7 @@ class restaurantFragment : Fragment() {
         RestModal.restaurants.observe(requireActivity()) { rests ->
                 adapter.setRestaurants(rests!!)
         }
+
         // loading observer
         RestModal.loading.observe(requireActivity(), { loading ->
             if (loading) {
