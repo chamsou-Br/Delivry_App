@@ -100,7 +100,7 @@
                     tools:src="@tools:sample/avatars" />
 
                 <ImageView
-                    android:id="@+id/map"
+                    android:id="@+id/edit"
                     android:layout_width="35dp"
                     android:layout_height="35dp"
                     android:layout_marginTop="16dp"
@@ -206,6 +206,32 @@
                             android:layout_width="20dp"
                             android:layout_height="20dp"
                             android:src="@drawable/instagram"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/map"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginEnd="8dp"
+                    app:cardCornerRadius="40dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/fb"
+                    app:layout_constraintEnd_toStartOf="@+id/insta"
+                    app:layout_constraintTop_toTopOf="@+id/insta">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <ImageView
+                            android:id="@+id/imageView29"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/ic_edit_location"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"

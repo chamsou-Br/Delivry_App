@@ -102,6 +102,11 @@ class menuFragment : Fragment() {
             mail.setOnClickListener {
                 mailTo(requireActivity(),restModal.restaurant.value!!.email!!)
             }
+            edit.setOnClickListener {
+                val bundle = Bundle()
+                bundle.putString("id",args?.getString("id")!!)
+                it.findNavController().navigate(R.id.action_detailsFragment_to_reviewFragment,bundle);
+            }
         }
     }
 

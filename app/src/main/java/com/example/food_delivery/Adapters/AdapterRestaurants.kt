@@ -46,6 +46,7 @@ class adapterRestaurants(val ctx : Context):RecyclerView.Adapter<adapterRestaura
         }
         holder.binding.apply {
             name.text = data[position].name;
+            review.text = data[position].avg.toString() + "( " + data[position].review + " )";
             Glide.with(holder.itemView.context)
                 .load(data[position].logoUrl)
                 .into(logo)

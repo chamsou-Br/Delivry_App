@@ -15,6 +15,7 @@ import com.example.food_delivery.R
 import com.example.food_delivery.Adapters.adapterBag
 import com.example.food_delivery.AuthActivity
 import com.example.food_delivery.ViewModal.BagModal
+import com.example.food_delivery.ViewModal.ClientModal
 import com.example.food_delivery.databinding.FragmentBagBinding
 import com.example.food_delivery.modals.Entity.Bag
 import com.example.movieexample.viewmodel.RestaurantModal
@@ -25,6 +26,8 @@ class bagFragment : Fragment() {
     //lateinit var data : List<Bag>
     private lateinit var adapter: adapterBag
     lateinit var bagModal: BagModal
+
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -56,14 +59,13 @@ class bagFragment : Fragment() {
             valid.setOnClickListener {
                 val pref = requireActivity().getSharedPreferences("food_delivry", Context.MODE_PRIVATE)
                 if (pref.contains("connected")) {
-                 /*   val db = AppDatabase.buildDatabase(requireActivity());
-                    db?.getBagDao()?.deleteByRest(args?.getInt("rest")!!);
-                    println(pref.getBoolean("connected",true))
-                 */
                     val bundle = Bundle()
                     bundle.putString("id",args?.getString("rest")!!)
                     it.findNavController().navigate(R.id.action_bagFragment_to_validateFragment,bundle);
                 } else {
+                    val pref2 = requireActivity().getSharedPreferences("food_delivry", Context.MODE_PRIVATE).edit()
+                    pref2.putInt("fragmentIndex",1);
+                    pref2.apply();
                     val intent = Intent(requireActivity(), AuthActivity::class.java)
                     startActivity(intent)
                 }

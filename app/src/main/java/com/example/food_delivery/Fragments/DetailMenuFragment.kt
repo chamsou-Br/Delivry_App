@@ -15,6 +15,7 @@ import com.example.food_delivery.Utils.AppDatabase
 import com.example.food_delivery.R
 import com.example.food_delivery.Utils.DataType.MenuData
 import com.example.food_delivery.ViewModal.BagModal
+import com.example.food_delivery.ViewModal.ClientModal
 import com.example.food_delivery.ViewModal.MenuModal
 import com.example.food_delivery.databinding.FragmentDetailMenuBinding
 import com.example.food_delivery.modals.Entity.Bag
@@ -45,7 +46,7 @@ class detailMenuFragment : Fragment() {
         val id = args?.getString("id");
         menuModal = ViewModelProvider(requireActivity()).get(MenuModal::class.java)
         bagModal = ViewModelProvider(requireActivity()).get(BagModal::class.java)
-        println(id!! + " data")
+        println(menuModal.menus.value)
         menuModal.loadMenu(id!!)
         menuModal.menu.observe(requireActivity()) { data ->
             println(data)

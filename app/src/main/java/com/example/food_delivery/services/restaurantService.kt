@@ -2,6 +2,8 @@ package com.example.food_delivery.services
 
 import com.example.food_delivery.Utils.DataType.MenuData
 import com.example.food_delivery.Utils.DataType.RestaurantsData
+import com.example.food_delivery.Utils.DataType.reviewRest
+import com.example.food_delivery.Utils.DataType.tokenData
 import com.example.food_delivery.Utils.url
 import retrofit2.Response
 import retrofit2.Retrofit
@@ -10,6 +12,8 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
+
+
 
 
 interface restaurantServiceAPI {
@@ -22,6 +26,12 @@ interface restaurantServiceAPI {
 
     @GET("/restaurants/{id}")
     suspend fun getRestaurantById(@Path("id") id: String): Response<RestaurantsData>
+
+    @POST("/review")
+    suspend fun addReviewRest(@Body review : reviewRest ): Response<reviewRest>
+
+    @POST("/review/restaurant/{id}/client")
+    suspend fun getReviewRest(@Path("id") id: String ,@Body client : tokenData ): Response<reviewRest>
 
     companion object {
         @Volatile

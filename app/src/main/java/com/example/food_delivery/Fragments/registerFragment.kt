@@ -39,6 +39,7 @@ class registerFragment : Fragment() {
             val fullName = binding.fullName.text.toString()
             val picture = "https://th.bing.com/th/id/R.af4897be5959a8e01db8f36a1f2675aa?rik=AY8fu9NGu8%2flbw&riu=http%3a%2f%2fstatesmanbiz.com%2fwp-content%2fuploads%2f2019%2f09%2fRMH-Statesman-Website-Headshot-Silhouette-300x200.jpg&ehk=qj6x%2bWrRtPcw%2bi0jMjZ4Nh3gJ1jKv6Se%2fs6IR3Y3zbk%3d&risl=&pid=ImgRaw&r=0"
             val client =  clientData(fullName = fullName,email = email,address = address , phone =  phone, password = password , picture = picture);
+            println(client)
             clientMod.register(client)
         }
         // loading observer

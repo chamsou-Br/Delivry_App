@@ -65,7 +65,7 @@
                 android:layout_height="match_parent">
 
                 <ImageView
-                    android:id="@+id/imageView16"
+                    android:id="@+id/pictureProfile"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:scaleType="centerCrop"
@@ -79,7 +79,7 @@
         </androidx.cardview.widget.CardView>
 
         <TextView
-            android:id="@+id/textView13"
+            android:id="@+id/username"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
@@ -101,14 +101,14 @@
             android:layout_marginEnd="32dp"
             android:background="@drawable/border_bottom"
             android:hint="fullName"
-            android:inputType="textPassword"
+            android:inputType="text"
             android:paddingHorizontal="8dp"
             android:shadowRadius="20"
             app:layout_constraintBottom_toTopOf="@+id/email"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView13" />
+            app:layout_constraintTop_toBottomOf="@+id/username" />
 
         <EditText
             android:id="@+id/email"
@@ -118,7 +118,7 @@
             android:layout_marginEnd="32dp"
             android:background="@drawable/border_bottom"
             android:hint="Email"
-            android:inputType="textPassword"
+            android:inputType="text"
             android:paddingHorizontal="8dp"
             android:shadowRadius="20"
             app:layout_constraintBottom_toTopOf="@+id/Address"
@@ -135,7 +135,7 @@
             android:layout_marginEnd="32dp"
             android:background="@drawable/border_bottom"
             android:hint="Address"
-            android:inputType="textPassword"
+            android:inputType="text"
             android:paddingHorizontal="8dp"
             android:shadowRadius="20"
             app:layout_constraintBottom_toTopOf="@+id/phone"
@@ -153,17 +153,17 @@
             android:layout_marginBottom="32dp"
             android:background="@drawable/border_bottom"
             android:hint="Phone"
-            android:inputType="textPassword"
+            android:inputType="text"
             android:paddingHorizontal="8dp"
             android:shadowRadius="20"
-            app:layout_constraintBottom_toTopOf="@+id/sendReview"
+            app:layout_constraintBottom_toTopOf="@+id/Editprofile"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/Address" />
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/sendReview"
+            android:id="@+id/Editprofile"
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:layout_marginStart="62dp"
@@ -208,7 +208,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <ProgressBar
-                    android:id="@+id/progressBarReview"
+                    android:id="@+id/progressBarEditProfile"
                     style="?android:attr/progressBarStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -222,6 +222,7 @@
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
+            android:id="@+id/pictureEdit"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:backgroundTint="@color/white"

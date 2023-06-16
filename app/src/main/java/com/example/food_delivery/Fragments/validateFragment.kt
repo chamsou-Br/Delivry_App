@@ -57,11 +57,8 @@ class validateFragment : Fragment() {
                     val orderItem = OrderItem(bag.id, bag.qty?.toInt()!!)
                     items.add(orderItem)
                 }
-                println(items)
                 val pref = requireActivity().getSharedPreferences("food_delivry", Context.MODE_PRIVATE)
-                val order = orderData(rest = args?.getString("id")!! , address =  address.text.toString() ,
-                    note = note.text.toString() , priceTotal = "120".toFloat(),
-                    orderItems = items , client = pref.getString("token_food_delivry",""))
+                val order = orderData(rest = args?.getString("id")!! , address =  address.text.toString() , note = note.text.toString() , priceTotal = "120".toFloat(),  orderItems = items , client = pref.getString("token_food_delivry",""))
                     orderModal.validateOrder(order);
             }
         }

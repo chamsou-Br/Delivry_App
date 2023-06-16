@@ -25,11 +25,18 @@ class loginFragment : Fragment() {
     lateinit var binding: FragmentLoginBinding
     lateinit var clientMod : ClientModal
 
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
+        val pref = requireActivity().getSharedPreferences("food_delivry", Context.MODE_PRIVATE)
+        val fragmentIndex = pref.getInt("fragmentIndex",0);
+        println(fragmentIndex)
+        val pref2 = requireActivity().getSharedPreferences("food_delivry", Context.MODE_PRIVATE).edit()
+        pref2.remove("fragmentIndex");
+        pref2.apply()
         binding = FragmentLoginBinding.inflate(layoutInflater)
         clientMod = ViewModelProvider(requireActivity()).get(ClientModal::class.java)
         binding.toRegister.setOnClickListener{
@@ -39,7 +46,9 @@ class loginFragment : Fragment() {
         binding.signin.setOnClickListener {
             val email = binding.email.text.toString()
             val password = binding.password.text.toString()
+
             val client =  clientData(email = email, password = password);
+            println(client)
             clientMod.login(client)
         }
         // loading observer
@@ -57,20 +66,25 @@ class loginFragment : Fragment() {
             Toast.makeText(requireContext(), errorMessaage, Toast.LENGTH_SHORT).show()
         })
 
-        clientMod.isConnected.observe(requireActivity(),{isConnect ->
-            val pref = requireActivity().getSharedPreferences("food_delivry", Context.MODE_PRIVATE).edit()
-            if (isConnect== true){
-                pref.putBoolean("connected",true)
-                pref.putString("token_food_delivry",clientMod.client.value?.token)
+        clientMod.isConnected.observe(requireActivity()) { isConnect ->
+            val pref =
+                requireActivity().getSharedPreferences("food_delivry", Context.MODE_PRIVATE).edit()
+            if (isConnect == true) {
+                pref.putBoolean("connected", true)
+                pref.putString("token_food_delivry", clientMod.client.value?.token)
                 pref.apply()
                 val intent = Intent(requireActivity(), MainActivity::class.java)
-                intent.putExtra("fragmentIndex", 1)
+                if (fragmentIndex == 1) {
+                    intent.putExtra("fragmentIndex", 1)
+                }else {
+                    intent.putExtra("fragmentIndex", 0)
+                }
                 startActivity(intent)
-            }else{
+            } else {
                 pref.remove("connected");
                 pref.apply()
             }
-        })
+        }
 
 
         return binding.root

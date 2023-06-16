@@ -9,17 +9,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.food_delivery.Utils.DataType.RestaurantsData
 import com.example.food_delivery.Adapters.adapterRestaurants
 import com.example.food_delivery.AuthActivity
-import com.example.food_delivery.R
-import com.example.food_delivery.Utils.AppDatabase
+import com.example.food_delivery.ViewModal.ClientModal
 import com.example.food_delivery.databinding.FragmentMainBinding
-import com.example.food_delivery.services.restaurantServiceAPI
 import com.example.movieexample.viewmodel.RestaurantModal
-import kotlinx.coroutines.*
 
 
 class restaurantFragment : Fragment() {
@@ -45,7 +41,6 @@ class restaurantFragment : Fragment() {
         RestModal.restaurants.observe(requireActivity()) { rests ->
                 adapter.setRestaurants(rests!!)
         }
-
         // loading observer
         RestModal.loading.observe(requireActivity(), { loading ->
             if (loading) {

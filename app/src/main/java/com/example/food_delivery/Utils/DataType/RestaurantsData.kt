@@ -4,7 +4,8 @@ data class RestaurantsData(val _id : String , val name:String,  var logoUrl : St
                            var mapX : String, var mapY : String, var type : String,
                            var  avg : Float, var review : Int, var phone : String, var email  : String,
                            var fbApp : String, var fbUrl : String,
-                           var instApp : String, var instUrl : String) {
+                           var instApp : String, var instUrl : String ,
+                            var delivry : String? = null , var codePromo : String? = null) {
     constructor(data : RestaurantsData) :  this(
         data._id,
         data.name,
@@ -20,6 +21,8 @@ data class RestaurantsData(val _id : String , val name:String,  var logoUrl : St
         data.fbApp,
         data.fbUrl,
         data.instApp,
-        data.instUrl
+        data.instUrl,
+        data.delivry ,
+        data.codePromo
     )
 }

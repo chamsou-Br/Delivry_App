@@ -1,9 +1,13 @@
 package com.example.movieexample.viewmodel
 
 
+import android.content.Context
+import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.food_delivery.Utils.DataType.RestaurantsData
+import com.example.food_delivery.Utils.DataType.reviewRest
+import com.example.food_delivery.Utils.DataType.tokenData
 import com.example.food_delivery.services.restaurantServiceAPI
 
 import kotlinx.coroutines.*
@@ -13,12 +17,14 @@ class RestaurantModal:ViewModel() {
     val restaurants = MutableLiveData<List<RestaurantsData>>()
     var  restaurant = MutableLiveData<RestaurantsData>()
     val loading = MutableLiveData<Boolean>()
+    val reviewLoading = MutableLiveData<Boolean>()
+    val review = MutableLiveData<reviewRest>()
     val errorMessage = MutableLiveData<String>()
 
     val exceptionHandler = CoroutineExceptionHandler { coroutineContext, throwable ->
         CoroutineScope(Dispatchers.Main).launch   {
             loading.value = false
-            errorMessage.value = "Une erreur s'est produite 1" + throwable
+            errorMessage.value = "An error has occurred" + throwable
             println("data")
             println(throwable)
         }
@@ -29,14 +35,15 @@ class RestaurantModal:ViewModel() {
             loading.postValue(true)
             CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
                val response = restaurantServiceAPI.createRestaurantServiceAPI().getAllRestaurants()
-
+                println(response)
+                println("data")
                 withContext(Dispatchers.Main) {
                     loading.postValue(false)
                     if (response.isSuccessful && response.body() != null) {
                         println(response.body())
                         restaurants.postValue(response.body())
                     } else {
-                        errorMessage.value = "Une erreur s'est produite 2"
+                        errorMessage.value = "An error has occurred"
                     }
                 }
 
@@ -56,11 +63,52 @@ class RestaurantModal:ViewModel() {
                     if (response.isSuccessful && response.body() != null) {
                         restaurant.value = response.body()
                     } else {
-                        errorMessage.value = "Une erreur s'est produite 3"
+                        errorMessage.value = "An error has occurred"
                     }
                 }
             }
             }
+    }
+
+    fun ReviewRest(data : reviewRest,ctx : Context) {
+            reviewLoading.value = true
+            CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
+                val response =
+                    restaurantServiceAPI.createRestaurantServiceAPI().addReviewRest(data)
+                withContext(Dispatchers.Main) {
+                    reviewLoading.value = false
+                    println(response.isSuccessful)
+                    println(response.body())
+                    if (response.isSuccessful && response.body() != null) {
+                        Toast.makeText(ctx, "your review is correctly updated !", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(ctx, "An error has occurred :(", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+    }
+
+    fun getReviewRest(id : String,data : tokenData) {
+        println("get rev")
+        println(data)
+        println(id)
+        CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
+            val response =
+                restaurantServiceAPI.createRestaurantServiceAPI().getReviewRest(id,data)
+            withContext(Dispatchers.Main) {
+                if (response.isSuccessful && response.body() != null) {
+                    review.value = response.body()
+                }
+            }
+        }
+    }
+
+    fun getRest(id : String) {
+        if (restaurant.value == null || restaurant.value!!._id != id){
+            loading.value = true
+            restaurant.value = restaurants.value?.find { it._id == id }
+            loading.value = false
+        }
     }
 
 }
