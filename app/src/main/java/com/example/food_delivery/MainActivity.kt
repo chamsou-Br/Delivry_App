@@ -2,6 +2,7 @@ package com.example.food_delivery
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.View
@@ -12,6 +13,7 @@ import androidx.navigation.ui.NavigationUI
 import com.example.food_delivery.Utils.DataType.tokenData
 import com.example.food_delivery.ViewModal.ClientModal
 import com.example.food_delivery.databinding.ActivityMainBinding
+import com.google.firebase.messaging.FirebaseMessaging
 
 
 class MainActivity : AppCompatActivity() {
@@ -47,6 +49,18 @@ class MainActivity : AppCompatActivity() {
             }
         }
         val view = binding.root
+        // Obtain the registration token
+        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val token = task.result
+                // Handle the registration token here
+                // You can send the token to your server or use it for other purposes
+                Log.d(TAG, "Registration token: $token")
+            } else {
+                // Handle token retrieval failure
+                Log.e(TAG, "Failed to retrieve registration token")
+            }
+        }
         setContentView(view)
 
 
@@ -58,6 +72,10 @@ class MainActivity : AppCompatActivity() {
         val inflater: MenuInflater = menuInflater
         inflater.inflate(R.menu.overflow_menw, menu)
         return true
+    }
+
+    companion object {
+        private const val TAG = "MainActivity"
     }
 
 

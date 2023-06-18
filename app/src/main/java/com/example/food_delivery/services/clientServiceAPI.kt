@@ -28,6 +28,9 @@ interface clientServiceAPI {
     @POST("/auth/login")
     suspend fun login(@Body user: clientData): Response<clientData>
 
+    @POST("/auth/loginWithGoogle")
+    suspend fun loginWithGoogle(@Body user: clientData): Response<clientData>
+
     @POST("/auth/log")
     suspend fun log(@Body user: clientData): Response<clientData>
 

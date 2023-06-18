@@ -1,16 +1,24 @@
 package com.example.food_delivery.Fragments
 
 import android.app.Activity
+import android.app.Instrumentation.ActivityResult
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.ImageDecoder
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import com.bumptech.glide.Glide
@@ -27,6 +35,9 @@ class ProfileFragment : Fragment() {
 
     lateinit var binding: FragmentProfileBinding
     lateinit var clientModal : ClientModal
+
+    lateinit var imageBitmap: Bitmap
+    private lateinit var image: ImageView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -55,7 +66,7 @@ class ProfileFragment : Fragment() {
             email.setText(clientModal.client.value?.email)
             phone.setText(clientModal.client.value?.phone)
             Address.setText(clientModal.client.value?.address)
-            if (clientModal.client.value?.picture.toString().contains("uploads")){
+            if (!clientModal.client.value?.picture.toString().contains("http")){
                 Glide.with(requireActivity())
                     .load(url + "/" + clientModal.client.value?.picture)
                     .into(pictureProfile)
@@ -83,6 +94,8 @@ class ProfileFragment : Fragment() {
 
         }
 
+        image = binding.pictureProfile;
+
         clientModal.errorMessage.observe(requireActivity()){err ->
             Toast.makeText(requireContext(), err, Toast.LENGTH_SHORT).show()
         }
@@ -95,7 +108,7 @@ class ProfileFragment : Fragment() {
                 email.setText(clientModal.client.value?.email)
                 phone.setText(clientModal.client.value?.phone)
                 Address.setText(clientModal.client.value?.address)
-                if (clientModal.client.value?.picture.toString().contains("uploads")){
+                if (!clientModal.client.value?.picture.toString().contains("http")){
                     Glide.with(requireActivity())
                         .load(url + "/" + clientModal.client.value?.picture)
                         .into(pictureProfile)
@@ -115,18 +128,32 @@ class ProfileFragment : Fragment() {
 
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
 
-        if ( resultCode == Activity.RESULT_OK) {
-            val imageUri: Uri? = data?.data
-            if (imageUri != null) {
-                // Perform the image upload using Retrofit
-                clientModal.uploadPicture(imageUri,clientModal.client.value?.token.toString(),requireActivity())
-                println("dataajdklaendiz")
+
+        override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+            super.onActivityResult(requestCode, resultCode, data)
+
+            if ( resultCode == Activity.RESULT_OK) {
+                println( data?.data)
+                val imageUri: Uri? = data?.data
+
+                val selectedImageUri = data?.getData()
+                imageBitmap = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                    val source = ImageDecoder.createSource(requireActivity().contentResolver, selectedImageUri!!)
+                    ImageDecoder.decodeBitmap(source)
+                } else {
+                    @Suppress("DEPRECATION")
+                    MediaStore.Images.Media.getBitmap(requireActivity().contentResolver, selectedImageUri)
+                }
+                image.setImageBitmap(imageBitmap)
+
+
+                if (imageUri != null) {
+                    // Perform the image upload using Retrofit
+                    clientModal.uploadPicture(imageUri,imageBitmap,clientModal.client.value?.token.toString(),requireActivity())
+                }
             }
         }
     }
 
 
-}
