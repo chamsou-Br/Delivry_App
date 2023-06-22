@@ -67,7 +67,7 @@ class validateFragment : Fragment() {
             if (validate == true) {
                 Toast.makeText(requireContext(), "Order is validated :)", Toast.LENGTH_LONG).show()
                 bagModal.deleteBagsOfRest(requireActivity(),args?.getString("id")!!)
-               view?.findNavController()?.navigate(R.id.action_validateFragment_to_mainFragment)
+               view?.findNavController()?.navigate(R.id.action_validateFragment_to_finFragment)
             }
         })
 

@@ -86,6 +86,10 @@
         <action
             android:id="@+id/action_validateFragment_to_mainFragment"
             app:destination="@id/mainFragment" />
+        <action
+            android:id="@+id/action_validateFragment_to_finFragment"
+            app:destination="@id/finFragment"
+            app:popUpToInclusive="false" />
     </fragment>
     <fragment
         android:id="@+id/reviewFragment"
@@ -97,4 +101,13 @@
         android:name="com.example.food_delivery.Fragments.oldOrders"
         android:label="fragment_old_orders"
         tools:layout="@layout/fragment_old_orders" />
+    <fragment
+        android:id="@+id/finFragment"
+        android:name="com.example.food_delivery.Fragments.FinFragment"
+        android:label="fragment_fin"
+        tools:layout="@layout/fragment_fin" >
+        <action
+            android:id="@+id/action_finFragment_to_mainFragment"
+            app:destination="@id/mainFragment" />
+    </fragment>
 </navigation>

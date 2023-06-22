@@ -111,6 +111,20 @@ class ClientModal: ViewModel() {
         }
     }
 
+    fun addTokenToUser(clientToken: tokenData) {
+        CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
+            val response =  clientServiceAPI.createClientServiceAPI().addtokenNotif(clientToken)
+            withContext(Dispatchers.Main) {
+                println(response.body())
+                if (response.isSuccessful && response.body() != null) {
+                    println("add token with sucess")
+                } else {
+                    println("failed in add token")
+                }
+            }
+        }
+    }
+
     fun editProfile(data: clientData) {
         loading.value = true;
         CoroutineScope(Dispatchers.IO + exceptionHandler).launch {

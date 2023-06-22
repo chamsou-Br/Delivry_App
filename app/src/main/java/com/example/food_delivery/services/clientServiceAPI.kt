@@ -40,6 +40,9 @@ interface clientServiceAPI {
     @POST("/auth/edit")
     suspend fun editprofile(@Body client: clientData): Response<clientData>
 
+    @POST("/notif/token")
+    suspend fun addtokenNotif(@Body client: tokenData): Response<String>
+
     @Multipart
     @POST("/auth/picture")
     suspend fun uploadImage(

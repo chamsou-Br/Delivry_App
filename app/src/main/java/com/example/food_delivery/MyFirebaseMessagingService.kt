@@ -6,6 +6,8 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.graphics.BitmapFactory
+import android.graphics.Color
 import android.nfc.Tag
 import android.os.Build
 import android.util.Log
@@ -20,129 +22,88 @@ import com.google.firebase.messaging.ktx.remoteMessage
 
 
 import androidx.test.core.app.ApplicationProvider
+import com.example.food_delivery.Utils.DataType.tokenData
+import com.example.food_delivery.services.clientServiceAPI
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 
 const val channalId = "notification_channel"
 const val channelName = "com.example.food_delivry"
 
 class FirebaseMessageReceiver : FirebaseMessagingService() {
+   // var userRepo= UsersRespository()
+    override fun onMessageReceived(remoteMessage: RemoteMessage) {
+        super.onMessageReceived(remoteMessage)
 
-    // Override onNewToken to get new token
+        // Handle incoming FCM messages here
+
+
+        showNotification(remoteMessage.notification?.title, remoteMessage.notification?.body)
+    }
+
+    private fun showNotification(title: String?, message: String?) {
+        val channelId = "default_channel_id"
+        val channelName = "Default Channel"
+        val notificationId = 1
+        println("data")
+        println(message)
+        val largeIconBitmap = BitmapFactory.decodeResource(resources, R.drawable.ic_back)
+
+        val notificationBuilder = NotificationCompat.Builder(this, channelId)
+            .setSmallIcon(R.drawable.logo) // Set a valid small icon
+            .setContentTitle(title)
+            .setContentText(message)
+            .setLargeIcon(largeIconBitmap)
+            .setAutoCancel(true)
+
+        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+        // Create the notification channel (required for Android 8.0 and above)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_DEFAULT)
+            channel.enableLights(true)
+            channel.lightColor = Color.BLUE
+            channel.enableVibration(true)
+            notificationManager.createNotificationChannel(channel)
+        }
+
+        notificationManager.notify(notificationId, notificationBuilder.build())
+    }
+
+
+    override fun onCreate() {
+        super.onCreate()
+
+    }
+
     override fun onNewToken(token: String) {
         super.onNewToken(token)
-    }
-
-    // Override onMessageReceived() method to extract the
-    // title and
-    // body from the message passed in FCM
-    override fun onMessageReceived(remoteMessage: RemoteMessage) {
-        // First case when notifications are received via
-        // data event
-        // Here, 'title' and 'message' are the assumed names
-        // of JSON
-        // attributes. Since here we do not have any data
-        // payload, This section is commented out. It is
-        // here only for reference purposes.
-        /*if(remoteMessage.getData().size()>0){
-            showNotification(remoteMessage.getData().get("title"),
-                          remoteMessage.getData().get("message"));
-        }*/
-
-        // Second case when notification payload is
-        // received.
-        if (remoteMessage.getNotification() != null) {
-            // Since the notification is received directly from
-            // FCM, the title and the body can be fetched
-            // directly as below.
-            showNotification(
-                remoteMessage.getNotification()!!.getTitle()!!,
-                remoteMessage.getNotification()!!.getBody()!!
-            )
+    println("this should work")
+        if(checkUserAuth()) {
+            CoroutineScope(Dispatchers.IO).launch{
+                val data = tokenData(client = getUserToken() , token = token)
+                println("new token")
+                println(data)
+                val resutl = clientServiceAPI.createClientServiceAPI().addtokenNotif(data)
+                delay(500)
+            }
         }
+
+
     }
 
-    // Method to get the custom Design for the display of
-    // notification.
-    @SuppressLint("RemoteViewLayout")
-    private fun getCustomDesign(
-        title: String,
-        message: String
-    ): RemoteViews {
-        val remoteViews = RemoteViews(
-            ApplicationProvider.getApplicationContext<Context>().getPackageName(),
-            R.layout.notification
-        )
-        remoteViews.setTextViewText(R.id.title, title)
-        remoteViews.setTextViewText(R.id.message, message)
-        remoteViews.setImageViewResource(
-            R.id.logo,
-            R.drawable.logo
-        )
-        return remoteViews
+
+    fun getUserToken():String {//recuperer le user_id sauvegardé
+        val pref = getSharedPreferences("food_delivry", Context.MODE_PRIVATE)
+        val token  = pref.getString("token_food_delivry","")
+        return token.toString()
     }
 
-    // Method to display the notifications
-    fun showNotification(
-        title: String,
-        message: String
-    ) {
-        // Pass the intent to switch to the MainActivity
-        val intent = Intent(this, MainActivity::class.java)
-        // Assign channel ID
-        val channel_id = "notification_channel"
-        // Here FLAG_ACTIVITY_CLEAR_TOP flag is set to clear
-        // the activities present in the activity stack,
-        // on the top of the Activity that is to be launched
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        // Pass the intent to PendingIntent to start the
-        // next Activity
-        val pendingIntent = PendingIntent.getActivity(
-            this, 0, intent,
-            PendingIntent.FLAG_ONE_SHOT
-        )
-
-        // Create a Builder object using NotificationCompat
-        // class. This will allow control over all the flags
-        var builder: NotificationCompat.Builder = NotificationCompat.Builder(
-            ApplicationProvider.getApplicationContext<Context>(),
-            channel_id
-        )
-            .setSmallIcon(R.drawable.logo)
-            .setAutoCancel(true)
-            .setVibrate(
-                longArrayOf(
-                    1000, 1000, 1000,
-                    1000, 1000
-                )
-            )
-            .setOnlyAlertOnce(true)
-            .setContentIntent(pendingIntent)
-
-        // A customized design for the notification can be
-        // set only for Android versions 4.1 and above. Thus
-        // condition for the same is checked here.
-        builder = builder.setContent(
-            getCustomDesign(title, message)
-        )
-        // Create an object of NotificationManager class to
-        // notify the
-        // user of events that happen in the background.
-        val notificationManager = getSystemService(
-            Context.NOTIFICATION_SERVICE
-        ) as NotificationManager?
-        // Check if the Android Version is greater than Oreo
-        if (Build.VERSION.SDK_INT
-            >= Build.VERSION_CODES.O
-        ) {
-            val notificationChannel = NotificationChannel(
-                channel_id, "web_app",
-                NotificationManager.IMPORTANCE_HIGH
-            )
-            notificationManager!!.createNotificationChannel(
-                notificationChannel
-            )
-        }
-        notificationManager!!.notify(0, builder.build())
+    fun checkUserAuth():Boolean {//verifier si le user est authentifié
+        val pref = getSharedPreferences("food_delivry", Context.MODE_PRIVATE)
+        return pref.contains("connected")
     }
 }
-

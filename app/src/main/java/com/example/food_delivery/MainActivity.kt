@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
@@ -13,7 +14,10 @@ import androidx.navigation.ui.NavigationUI
 import com.example.food_delivery.Utils.DataType.tokenData
 import com.example.food_delivery.ViewModal.ClientModal
 import com.example.food_delivery.databinding.ActivityMainBinding
+import com.example.food_delivery.services.clientServiceAPI
+import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
+import kotlinx.coroutines.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -50,29 +54,39 @@ class MainActivity : AppCompatActivity() {
         }
         val view = binding.root
         // Obtain the registration token
-        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                val token = task.result
-                // Handle the registration token here
-                // You can send the token to your server or use it for other purposes
-                Log.d(TAG, "Registration token: $token")
-            } else {
-                // Handle token retrieval failure
-                Log.e(TAG, "Failed to retrieve registration token")
+        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                Log.w(TAG, "Fetching FCM registration token failed", task.exception)
+                return@OnCompleteListener
             }
-        }
+            val token = task.result
+            val clientMod = ViewModelProvider(this).get(ClientModal::class.java)
+            if(checkUserAuth()) {
+                clientMod.addTokenToUser(tokenData(client = getUserToken() , token = token))
+            }
+
+        })
         setContentView(view)
-
-
 
     }
 
+    fun getUserToken():String {//recuperer le user_id sauvegardé
+        val pref = getSharedPreferences("food_delivry", Context.MODE_PRIVATE)
+        val token  = pref.getString("token_food_delivry","")
+        return token.toString()
+    }
 
+    fun checkUserAuth():Boolean {//verifier si le user est authentifié
+        val pref = getSharedPreferences("food_delivry", Context.MODE_PRIVATE)
+        return pref.contains("connected")
+    }
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflater: MenuInflater = menuInflater
         inflater.inflate(R.menu.overflow_menw, menu)
         return true
     }
+
+
 
     companion object {
         private const val TAG = "MainActivity"
