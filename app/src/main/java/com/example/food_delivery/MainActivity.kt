@@ -1,6 +1,7 @@
 package com.example.food_delivery
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -46,6 +47,7 @@ class MainActivity : AppCompatActivity() {
 
         NavigationUI.setupWithNavController(binding.navBottom,navController)
         navController.addOnDestinationChangedListener { _, destination, _ ->
+
             if (destination.id == R.id.mainFragment || destination.id == R.id.oldOrders || destination.id == R.id.profileFragment) {
               binding.navBottom.visibility = View.VISIBLE
             } else {

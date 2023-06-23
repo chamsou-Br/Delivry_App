@@ -88,7 +88,7 @@ class menuFragment : Fragment() {
                 it.findNavController().navigateUp()
             }
             fb.setOnClickListener {
-                openFb(requireActivity(), restModal.restaurant.value!!.fbUrl, restModal.restaurant.value!!.fbUrl!!)
+                openFb(requireActivity(), restModal.restaurant.value!!.fbApp, restModal.restaurant.value!!.fbUrl!!)
             }
             map.setOnClickListener {
                 openMap(requireActivity(), restModal.restaurant.value!!.mapX!!, restModal.restaurant.value!!.mapY!!)

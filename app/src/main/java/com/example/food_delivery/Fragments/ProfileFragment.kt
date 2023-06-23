@@ -57,9 +57,10 @@ class ProfileFragment : Fragment() {
             val pref = requireActivity().getSharedPreferences("food_delivry", Context.MODE_PRIVATE) // ref.getString("token_food_delivry","")!!
         }else {
             val intent = Intent(requireActivity(), AuthActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)
         }
-        clientModal = ViewModelProvider(requireActivity()).get(ClientModal::class.java)
+        clientModal = ViewModelProvider(requireActivity())[ClientModal::class.java]
         binding.apply {
             username.text = clientModal.client.value?.fullName
             fullName.setText(clientModal.client.value?.fullName)
@@ -90,31 +91,34 @@ class ProfileFragment : Fragment() {
 
         binding.Editprofile.setOnClickListener {
             clientModal.editProfile(clientData(fullName = binding.fullName.text.toString(),email = binding.email.text.toString(), address = binding.Address.text.toString(), phone = binding.phone.text.toString(), token = clientModal.client.value?.token))
-
-
         }
 
         image = binding.pictureProfile;
-
+/*
         clientModal.errorMessage.observe(requireActivity()){err ->
+            println("error")
+            println(err)
             Toast.makeText(requireContext(), err, Toast.LENGTH_SHORT).show()
         }
 
-        clientModal.client.observe(requireActivity()){err ->
-            Toast.makeText(requireContext(), "your information is updated correctly", Toast.LENGTH_SHORT).show()
+ */
+
+        clientModal.client.observe(requireActivity()){client ->
+            println(client);
+            Toast.makeText(requireActivity(), "your information is charged successfully", Toast.LENGTH_SHORT).show()
             binding.apply {
-                username.text = clientModal.client.value?.fullName
-                fullName.setText(clientModal.client.value?.fullName)
-                email.setText(clientModal.client.value?.email)
-                phone.setText(clientModal.client.value?.phone)
-                Address.setText(clientModal.client.value?.address)
-                if (!clientModal.client.value?.picture.toString().contains("http")){
+                username.text = client.fullName
+                fullName.setText(client.fullName)
+                email.setText(client.email)
+                phone.setText(client.phone)
+                Address.setText(client.address)
+                if (!client.picture.toString().contains("http")){
                     Glide.with(requireActivity())
-                        .load(url + "/" + clientModal.client.value?.picture)
+                        .load(url + "/" + client.picture)
                         .into(pictureProfile)
                 }else {
                     Glide.with(requireActivity())
-                        .load(clientModal.client.value?.picture)
+                        .load(client.picture)
                         .into(pictureProfile)
                 }
             }

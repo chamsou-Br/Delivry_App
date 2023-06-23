@@ -5,37 +5,57 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.food_delivery.Adapters.adapterRestaurants
 import com.example.food_delivery.R
+import com.example.food_delivery.Utils.DataType.RestaurantsData
+import com.example.food_delivery.databinding.FragmentMainBinding
+import com.example.food_delivery.databinding.FragmentOldOrdersBinding
+import com.example.movieexample.viewmodel.RestaurantModal
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [oldOrders.newInstance] factory method to
- * create an instance of this fragment.
- */
 class oldOrders : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    lateinit var binding: FragmentOldOrdersBinding
+    var  data = mutableListOf<RestaurantsData>()
+    lateinit var RestModal: RestaurantModal
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_old_orders, container, false)
+        binding = FragmentOldOrdersBinding.inflate(layoutInflater)
+        binding.recyclerView.layoutManager = LinearLayoutManager(requireActivity())
+        RestModal = ViewModelProvider(requireActivity()).get(RestaurantModal::class.java)
+        val adapter = adapterRestaurants(requireActivity())
+        binding.recyclerView.adapter = adapter
+        RestModal.searchRest("")
+
+        RestModal.restaurantsSearch.observe(requireActivity()) { rests ->
+            adapter.setRestaurants(rests!!)
+        }
+        // loading observer
+
+        RestModal.loading.observe(requireActivity(), { loading ->
+            if (loading) {
+                binding.progressBar.visibility = View.VISIBLE
+            } else {
+                binding.progressBar.visibility = View.GONE
+            }
+        })
+
+        RestModal.errorMessage.observe(requireActivity(), { errorMessaage ->
+            Toast.makeText(requireContext(), errorMessaage, Toast.LENGTH_SHORT).show()
+        })
+
+        binding.send.setOnClickListener {
+            RestModal.searchRest(binding.search.text.toString())
+        }
+
+
+        val root = binding.root
+        return root
     }
 
 

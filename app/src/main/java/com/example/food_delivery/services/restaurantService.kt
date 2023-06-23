@@ -12,14 +12,16 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
-
-
+import retrofit2.http.Query
 
 
 interface restaurantServiceAPI {
 
     @GET("/restaurants")
     suspend fun getAllRestaurants(): Response<List<RestaurantsData>>
+
+    @GET("/restaurants")
+    suspend fun searchRestairants(@Query("search") search : String): Response<List<RestaurantsData>>
 
     @POST("/restaurants")
     suspend fun addRestaurant(@Body rest: RestaurantsData): String
@@ -31,7 +33,7 @@ interface restaurantServiceAPI {
     suspend fun addReviewRest(@Body review : reviewRest ): Response<reviewRest>
 
     @POST("/review/restaurant/{id}/client")
-    suspend fun getReviewRest(@Path("id") id: String ,@Body client : tokenData ): Response<reviewRest>
+    suspend fun getReviewRest(@Path("id") id: String ,@Body client : tokenData ): Response<reviewRest?>
 
     companion object {
         @Volatile

@@ -15,6 +15,7 @@ import kotlinx.coroutines.*
 class RestaurantModal:ViewModel() {
 
     val restaurants = MutableLiveData<List<RestaurantsData>>()
+    val restaurantsSearch = MutableLiveData<List<RestaurantsData>>()
     var  restaurant = MutableLiveData<RestaurantsData>()
     val loading = MutableLiveData<Boolean>()
     val reviewLoading = MutableLiveData<Boolean>()
@@ -24,8 +25,7 @@ class RestaurantModal:ViewModel() {
     val exceptionHandler = CoroutineExceptionHandler { coroutineContext, throwable ->
         CoroutineScope(Dispatchers.Main).launch   {
             loading.value = false
-            errorMessage.value = "An error has occurred" + throwable
-            println("data")
+            errorMessage.value = "An error has occurred in rest + " + throwable
             println(throwable)
         }
     }
@@ -52,6 +52,23 @@ class RestaurantModal:ViewModel() {
         }
     }
 
+    fun searchRest (search : String){
+            loading.postValue(true)
+            CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
+                println(search)
+                val response = restaurantServiceAPI.createRestaurantServiceAPI().searchRestairants(search)
+                withContext(Dispatchers.Main) {
+                    loading.postValue(false)
+                    if (response.isSuccessful && response.body() != null) {
+                        println(response.body())
+                        restaurantsSearch.postValue(response.body())
+                    } else {
+                        errorMessage.value = "An error has occurred"
+                    }
+                }
+        }
+    }
+
     fun loadRest(id : String) {
         if (restaurant.value == null || restaurant.value!!._id != id){
             loading.value = true
@@ -69,6 +86,8 @@ class RestaurantModal:ViewModel() {
             }
             }
     }
+
+
 
     fun ReviewRest(data : reviewRest,ctx : Context) {
             reviewLoading.value = true
@@ -89,18 +108,22 @@ class RestaurantModal:ViewModel() {
     }
 
     fun getReviewRest(id : String,data : tokenData) {
-        println("get rev")
-        println(data)
-        println(id)
-        CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-            val response =
-                restaurantServiceAPI.createRestaurantServiceAPI().getReviewRest(id,data)
-            withContext(Dispatchers.Main) {
-                if (response.isSuccessful && response.body() != null) {
-                    review.value = response.body()
+        if (review.value == null || ( id != review.value!!.rest)) {
+            CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
+                println("review")
+                val response =
+                    restaurantServiceAPI.createRestaurantServiceAPI().getReviewRest(id,data)
+                withContext(Dispatchers.Main) {
+                    println(response.body())
+                    println("res")
+                    if (response.isSuccessful && response.body() != null) {
+                        if (response.body()!!.rating != 0)
+                            review.value = response.body()
+                    }
                 }
             }
         }
+
     }
 
     fun getRest(id : String) {

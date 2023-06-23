@@ -137,16 +137,7 @@ class loginFragment : Fragment() {
         }
     }
 
-    /*
-    override fun onStart() {
-        super.onStart()
-        if(FirebaseAuth.getInstance().currentUser != null){
-            val i  = Intent(requireActivity(),MainActivity::class.java)
-            startActivity(i)
-        }
-    }
 
-     */
 
 
 

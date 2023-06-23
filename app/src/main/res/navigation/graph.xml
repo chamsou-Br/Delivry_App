@@ -95,12 +95,20 @@
         android:id="@+id/reviewFragment"
         android:name="com.example.food_delivery.Fragments.reviewFragment"
         android:label="fragment_review"
-        tools:layout="@layout/fragment_review" />
+        tools:layout="@layout/fragment_review" >
+        <action
+            android:id="@+id/action_reviewFragment_to_detailsFragment"
+            app:destination="@id/detailsFragment" />
+    </fragment>
     <fragment
         android:id="@+id/oldOrders"
         android:name="com.example.food_delivery.Fragments.oldOrders"
         android:label="fragment_old_orders"
-        tools:layout="@layout/fragment_old_orders" />
+        tools:layout="@layout/fragment_old_orders" >
+        <action
+            android:id="@+id/action_oldOrders_to_detailsFragment"
+            app:destination="@id/detailsFragment" />
+    </fragment>
     <fragment
         android:id="@+id/finFragment"
         android:name="com.example.food_delivery.Fragments.FinFragment"

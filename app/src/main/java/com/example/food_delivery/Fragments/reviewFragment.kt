@@ -56,19 +56,22 @@ class reviewFragment : Fragment() {
 
         restModal.review.observe(requireActivity()){rev ->
             binding.apply{
-                   reviewInput.setText(rev.review);
-                        val dark = ContextCompat.getColor(requireActivity(), R.color.dark)
-                        val white = ContextCompat.getColor(requireActivity(), R.color.white)
-                        ConstraintLayoutrating.forEach {
-                            it.setBackgroundResource(R.drawable.rating_border_card_view)
-                        }
-                        textRating.forEach {
-                            it.setTextColor(dark)
-                        }
-                        this@reviewFragment.rating = rev.rating;
-                        textRating[rev.rating - 1].setTextColor(white)
-                        ConstraintLayoutrating[rev.rating - 1].setBackgroundResource(R.drawable.rating_border_card_view_focus)
-            }
+                if (rev != null  && rev.rest == args?.getString("id")!!) {
+                    reviewInput.setText(rev.review);
+                    val dark = ContextCompat.getColor(requireActivity(), R.color.dark)
+                    val white = ContextCompat.getColor(requireActivity(), R.color.white)
+                    ConstraintLayoutrating.forEach {
+                        it.setBackgroundResource(R.drawable.rating_border_card_view)
+                    }
+                    textRating.forEach {
+                        it.setTextColor(dark)
+                    }
+                    this@reviewFragment.rating = rev.rating;
+                    textRating[rev.rating - 1].setTextColor(white)
+                    ConstraintLayoutrating[rev.rating - 1].setBackgroundResource(R.drawable.rating_border_card_view_focus)
+
+                }
+}
         }
 
         restModal.restaurant.observe(requireActivity()) { rest ->
@@ -116,8 +119,8 @@ class reviewFragment : Fragment() {
                 val pref = requireActivity().getSharedPreferences("food_delivry", Context.MODE_PRIVATE)
                 val rev = reviewRest(pref.getString("token_food_delivry","")!!, restModal.restaurant.value?._id!!,rating,binding.reviewInput.text.toString())
                 restModal.ReviewRest(rev,requireContext());
+                it.findNavController().navigateUp()
             }else {
-
                 val intent = Intent(requireActivity(), AuthActivity::class.java)
                 startActivity(intent)
             }

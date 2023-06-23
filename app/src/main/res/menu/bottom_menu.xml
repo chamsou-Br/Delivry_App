@@ -5,20 +5,20 @@
         android:id="@+id/mainFragment"
         android:enabled="true"
         android:icon="@drawable/ic_home_drawer"
-        android:title="First"
+        android:title="Home"
         android:visible="true" />
 
     <item
         android:id="@+id/oldOrders"
         android:enabled="true"
-        android:icon="@drawable/facebook"
-        android:title="Second"
+        android:icon="@drawable/search"
+        android:title="Search"
         android:visible="true" />
 
     <item
         android:id="@+id/profileFragment"
         android:enabled="true"
-        android:icon="@drawable/ic_back"
-        android:title="Third"
+        android:icon="@drawable/ic_profile"
+        android:title="profile"
         android:visible="true" />
 </menu>

@@ -42,7 +42,12 @@ class adapterRestaurants(val ctx : Context):RecyclerView.Adapter<adapterRestaura
             val pref = ctx.getSharedPreferences("food_delivry", Context.MODE_PRIVATE).edit()
             pref.putString("rest",data[position]._id)
             pref.apply()
-            it.findNavController().navigate(R.id.action_mainFragment_to_detailsFragment,bundle)
+            try {
+                it.findNavController().navigate(R.id.action_mainFragment_to_detailsFragment,bundle)
+            }catch (err : Exception){
+                it.findNavController().navigate(R.id.action_oldOrders_to_detailsFragment,bundle)
+            }
+
         }
         holder.binding.apply {
             name.text = data[position].name;
@@ -50,7 +55,6 @@ class adapterRestaurants(val ctx : Context):RecyclerView.Adapter<adapterRestaura
             Glide.with(holder.itemView.context)
                 .load(data[position].logoUrl)
                 .into(logo)
-
 
         }
 

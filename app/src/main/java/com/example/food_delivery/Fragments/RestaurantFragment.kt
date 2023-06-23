@@ -12,10 +12,13 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.food_delivery.Adapters.adapterRestaurants
 import com.example.food_delivery.AuthActivity
+import com.example.food_delivery.R
 import com.example.food_delivery.Utils.DataType.RestaurantsData
+import com.example.food_delivery.ViewModal.ClientModal
 import com.example.food_delivery.databinding.FragmentMainBinding
 import com.example.movieexample.viewmodel.RestaurantModal
 import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 
 import com.google.android.gms.tasks.OnCompleteListener
 
@@ -24,6 +27,7 @@ class restaurantFragment : Fragment() {
     var  data = mutableListOf<RestaurantsData>()
     lateinit var binding: FragmentMainBinding
     lateinit var RestModal: RestaurantModal
+    lateinit var clientMod : ClientModal
 
 
 
@@ -36,6 +40,7 @@ class restaurantFragment : Fragment() {
         binding = FragmentMainBinding.inflate(layoutInflater)
         binding.recyclerView.layoutManager = LinearLayoutManager(requireActivity())
         RestModal = ViewModelProvider(requireActivity()).get(RestaurantModal::class.java)
+        clientMod = ViewModelProvider(requireActivity())[ClientModal::class.java]
         val adapter = adapterRestaurants(requireActivity())
         binding.recyclerView.adapter = adapter
         RestModal.loadRests()
@@ -57,12 +62,21 @@ class restaurantFragment : Fragment() {
         })
 
         binding.logOut.setOnClickListener {
+            // signi with google
+            val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestProfile()
+                .build()
+            val client = GoogleSignIn.getClient(requireContext(), gso);
+            client.signOut()
             val pref = requireActivity().getSharedPreferences("food_delivry", Context.MODE_PRIVATE)
             if (pref.contains("connected")) {
                 val pref2 = requireContext().getSharedPreferences("food_delivry", Context.MODE_PRIVATE).edit()
                 pref2.remove("connected")
                 pref2.remove("token_food_delivry")
                 pref2.apply()
+              //  clientMod.client.value = null  ;
                 val intent = Intent(requireActivity(), AuthActivity::class.java)
                 startActivity(intent)
             } else {
